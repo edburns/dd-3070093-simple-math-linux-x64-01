@@ -33,16 +33,42 @@ Describe 'Get-Fibonacci' {
     }
 }
 
+Describe 'Get-Factorial' {
+    It 'returns 1 for N=0' {
+        Get-Factorial -N 0 | Should -Be 1
+    }
+
+    It 'returns 1 for N=1' {
+        Get-Factorial -N 1 | Should -Be 1
+    }
+
+    It 'returns the correct factorial for a representative positive value' {
+        Get-Factorial -N 5 | Should -Be 120
+    }
+
+    It 'emits only its numeric return value, with no incidental output' {
+        $output = @(Get-Factorial -N 5)
+        $output.Count | Should -Be 1
+        $output[0] | Should -Be 120
+        ($output[0] -is [System.Numerics.BigInteger]) | Should -BeTrue
+    }
+}
+
 Describe 'math-tool.ps1 direct CLI execution' {
     BeforeAll {
         function Invoke-MathTool {
             param(
-                [int]$N
+                [int]$N,
+                [string]$Operation
             )
 
             $stderrPath = [System.IO.Path]::GetTempFileName()
             try {
-                $stdout = & pwsh -NoLogo -NoProfile -File $script:ImplementationPath -N $N 2> $stderrPath
+                $arguments = @('-NoLogo', '-NoProfile', '-File', $script:ImplementationPath, '-N', $N)
+                if ($PSBoundParameters.ContainsKey('Operation')) {
+                    $arguments += @('-Operation', $Operation)
+                }
+                $stdout = & pwsh @arguments 2> $stderrPath
                 $exitCode = $LASTEXITCODE
                 $stderr = @(Get-Content -LiteralPath $stderrPath)
             }
@@ -58,15 +84,15 @@ Describe 'math-tool.ps1 direct CLI execution' {
         }
     }
 
-    It 'prints exactly one line "Fibonacci(0) = 0" for N=0' {
+    It 'prints exactly one line "Fibonacci(0) = 0" for N=0 when operation is omitted' {
         $result = Invoke-MathTool -N 0
         $result.ExitCode | Should -Be 0
         $result.Stdout.Count | Should -Be 1
         $result.Stdout[0] | Should -Be 'Fibonacci(0) = 0'
     }
 
-    It 'prints exactly one line "Fibonacci(1) = 1" for N=1' {
-        $result = Invoke-MathTool -N 1
+    It 'dispatches explicitly to Fibonacci and prints exactly one formatted line' {
+        $result = Invoke-MathTool -N 1 -Operation fibonacci
         $result.ExitCode | Should -Be 0
         $result.Stdout.Count | Should -Be 1
         $result.Stdout[0] | Should -Be 'Fibonacci(1) = 1'
@@ -77,6 +103,13 @@ Describe 'math-tool.ps1 direct CLI execution' {
         $result.ExitCode | Should -Be 0
         $result.Stdout.Count | Should -Be 1
         $result.Stdout[0] | Should -Be 'Fibonacci(10) = 55'
+    }
+
+    It 'dispatches to factorial and prints exactly one formatted line' {
+        $result = Invoke-MathTool -N 5 -Operation factorial
+        $result.ExitCode | Should -Be 0
+        $result.Stdout.Count | Should -Be 1
+        $result.Stdout[0] | Should -Be 'Factorial(5) = 120'
     }
 
     It 'rejects values whose Fibonacci number exceeds Int32' {
@@ -90,5 +123,17 @@ Describe 'math-tool.ps1 direct CLI execution' {
         $result = Invoke-MathTool -N 10
         $result.Stdout[0] | Should -Not -Be (Get-Fibonacci -N 10)
         $result.Stdout[0] | Should -Match '^Fibonacci\(10\) = 55$'
+    }
+
+    It 'rejects operations outside the supported set' {
+        $result = Invoke-MathTool -N 5 -Operation unsupported
+        $result.ExitCode | Should -Not -Be 0
+        $result.Stdout.Count | Should -Be 0
+    }
+
+    It 'rejects negative inputs' {
+        $result = Invoke-MathTool -N -1 -Operation factorial
+        $result.ExitCode | Should -Not -Be 0
+        $result.Stdout.Count | Should -Be 0
     }
 }
