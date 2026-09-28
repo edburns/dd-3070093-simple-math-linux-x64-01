@@ -18,6 +18,14 @@ Describe 'Get-Fibonacci' {
         Get-Fibonacci -N 10 | Should -Be 55
     }
 
+    It 'returns the largest Fibonacci number representable by Int32' {
+        Get-Fibonacci -N 46 | Should -Be 1836311903
+    }
+
+    It 'rejects values whose Fibonacci number exceeds Int32' {
+        { Get-Fibonacci -N 47 } | Should -Throw
+    }
+
     It 'emits only its numeric return value, with no incidental output' {
         $output = @(Get-Fibonacci -N 10)
         $output.Count | Should -Be 1
@@ -59,6 +67,12 @@ Describe 'math-tool.ps1 direct CLI execution' {
         $result.ExitCode | Should -Be 0
         $result.Stdout.Count | Should -Be 1
         $result.Stdout[0] | Should -Be 'Fibonacci(10) = 55'
+    }
+
+    It 'rejects values whose Fibonacci number exceeds Int32' {
+        $result = Invoke-MathTool -N 47
+        $result.ExitCode | Should -Not -Be 0
+        $result.Stdout.Count | Should -Be 0
     }
 
     It 'does not contaminate Get-Fibonacci results with CLI formatting output' {
