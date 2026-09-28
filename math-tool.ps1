@@ -37,5 +37,5 @@ function Get-Fibonacci {
 
 if ($MyInvocation.InvocationName -ne '.') {
     $result = Get-Fibonacci -N $N
-    Write-Host "Fibonacci($N) = $result"
+    Write-Output "Fibonacci($N) = $result"
 }
