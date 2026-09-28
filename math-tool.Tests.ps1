@@ -40,10 +40,20 @@ Describe 'math-tool.ps1 direct CLI execution' {
                 [int]$N
             )
 
-            $stdout = & pwsh -NoLogo -NoProfile -File $script:ImplementationPath -N $N
+            $stderrPath = [System.IO.Path]::GetTempFileName()
+            try {
+                $stdout = & pwsh -NoLogo -NoProfile -File $script:ImplementationPath -N $N 2> $stderrPath
+                $exitCode = $LASTEXITCODE
+                $stderr = @(Get-Content -LiteralPath $stderrPath)
+            }
+            finally {
+                Remove-Item -LiteralPath $stderrPath -Force
+            }
+
             [pscustomobject]@{
-                ExitCode = $LASTEXITCODE
+                ExitCode = $exitCode
                 Stdout   = @($stdout)
+                Stderr   = $stderr
             }
         }
     }
@@ -73,6 +83,7 @@ Describe 'math-tool.ps1 direct CLI execution' {
         $result = Invoke-MathTool -N 47
         $result.ExitCode | Should -Not -Be 0
         $result.Stdout.Count | Should -Be 0
+        $result.Stderr -join "`n" | Should -Match 'maximum allowed range of 46'
     }
 
     It 'does not contaminate Get-Fibonacci results with CLI formatting output' {
