@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "repository": "edburns/dd-3070093-simple-math-linux-x64-01",
+  "repositoryUrl": "https://github.com/edburns/dd-3070093-simple-math-linux-x64-01",
+  "startedAt": "2026-09-28T01:12:49Z",
+  "completedAt": "2026-09-28T01:54:43Z",
+  "lessonPropagation": "off",
+  "baselineBranch": "experiment/shepherd-shared-baseline",
+  "baselineSha": "bfea4e84acde14024adb11386bebf88a720b2581",
+  "target": "/home/edburns/workareas/dd-3070093-simple-math-linux-x64-01-shepherd-target",
+  "branch": "experiment/shepherd-control",
+  "worktree": "/home/edburns/workareas/dd-3070093-simple-math-linux-x64-01-shepherd-control",
+  "campaignDirectory": "/home/edburns/workareas/dd-3070093-simple-math-linux-x64-01-shepherd-control/1-math-control-remove-before-merge",
+  "issues": [
+    2,
+    3
+  ],
+  "handoff": "/home/edburns/workareas/dd-3070093-simple-math-linux-x64-01-shepherd-control/1-math-control-remove-before-merge/prompts/shepherd-task-20-20260928-0113/shepherd-test-experiment-handoff.json",
+  "runDirectory": "/home/edburns/workareas/dd-3070093-simple-math-linux-x64-01-shepherd-control/1-math-control-remove-before-merge/shepherd-tasks-adcb73ba-b4e3-443e-ba80-18493643ac26-20260928-0115",
+  "postMortem": "/home/edburns/workareas/dd-3070093-simple-math-linux-x64-01-shepherd-control/1-math-control-remove-before-merge/shepherd-tasks-adcb73ba-b4e3-443e-ba80-18493643ac26-20260928-0115/20260928-0149-post-mortem.md",
+  "lessons": "/home/edburns/workareas/dd-3070093-simple-math-linux-x64-01-shepherd-control/1-math-control-remove-before-merge/campaign-lessons.md"
+}

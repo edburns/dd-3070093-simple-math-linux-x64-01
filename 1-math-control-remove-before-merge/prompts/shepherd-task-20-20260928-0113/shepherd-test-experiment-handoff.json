@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "mode": "off",
+  "baselineSha": "bfea4e84acde14024adb11386bebf88a720b2581",
+  "campaignId": "adcb73ba-b4e3-443e-ba80-18493643ac26",
+  "issueNumbers": [
+    2,
+    3
+  ],
+  "actualBodiesVerified": [
+    {
+      "number": 2,
+      "state": "OPEN",
+      "bodyVerified": true
+    },
+    {
+      "number": 3,
+      "state": "OPEN",
+      "bodyVerified": true
+    }
+  ],
+  "expectedLessonCategory": "Non-obvious repository-tested implementation pattern that lets dot-sourced unit tests coexist with direct CLI execution."
+}
